@@ -75,96 +75,6 @@ function Library:Create(name, info, accentcolor)
 		Title_TopBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Title_TopBar.Parent = TopBar
 
-		local MobileButton = Instance.new("Frame")
-		MobileButton.Name = "MobileButton"
-		MobileButton.AnchorPoint = Vector2.new(1, 0.5)
-		MobileButton.Position = UDim2.new(1, -65, 0.5, 0)
-		MobileButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		MobileButton.Size = UDim2.new(0, 18, 0, 18)
-		MobileButton.BorderSizePixel = 0
-		MobileButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-		MobileButton.Parent = TopBar
-
-		local UIStroke_Mobile = Instance.new("UIStroke")
-		UIStroke_Mobile.Color = Color3.fromRGB(70, 70, 70)
-		UIStroke_Mobile.Parent = MobileButton
-
-		local UICorner_Mobile = Instance.new("UICorner")
-		UICorner_Mobile.CornerRadius = UDim.new(0, 3)
-		UICorner_Mobile.Parent = MobileButton
-
-		local MobileIcon = Instance.new("TextLabel")
-		MobileIcon.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-		MobileIcon.TextColor3 = Color3.fromRGB(150, 150, 150)
-		MobileIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		MobileIcon.Text = "≡"
-		MobileIcon.BackgroundTransparency = 1
-		MobileIcon.Size = UDim2.new(1, 0, 1, 0)
-		MobileIcon.BorderSizePixel = 0
-		MobileIcon.TextSize = 14
-		MobileIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		MobileIcon.Parent = MobileButton
-
-		local MinimizeButton = Instance.new("Frame")
-		MinimizeButton.Name = "MinimizeButton"
-		MinimizeButton.AnchorPoint = Vector2.new(1, 0.5)
-		MinimizeButton.Position = UDim2.new(1, -42, 0.5, 0)
-		MinimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		MinimizeButton.Size = UDim2.new(0, 18, 0, 18)
-		MinimizeButton.BorderSizePixel = 0
-		MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-		MinimizeButton.Parent = TopBar
-
-		local UIStroke_Minimize = Instance.new("UIStroke")
-		UIStroke_Minimize.Color = Color3.fromRGB(70, 70, 70)
-		UIStroke_Minimize.Parent = MinimizeButton
-
-		local UICorner_Minimize = Instance.new("UICorner")
-		UICorner_Minimize.CornerRadius = UDim.new(0, 3)
-		UICorner_Minimize.Parent = MinimizeButton
-
-		local MinimizeIcon = Instance.new("TextLabel")
-		MinimizeIcon.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-		MinimizeIcon.TextColor3 = Color3.fromRGB(150, 150, 150)
-		MinimizeIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		MinimizeIcon.Text = "-"
-		MinimizeIcon.BackgroundTransparency = 1
-		MinimizeIcon.Size = UDim2.new(1, 0, 1, 0)
-		MinimizeIcon.BorderSizePixel = 0
-		MinimizeIcon.TextSize = 16
-		MinimizeIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		MinimizeIcon.Parent = MinimizeButton
-
-		local CloseButton = Instance.new("Frame")
-		CloseButton.Name = "CloseButton"
-		CloseButton.AnchorPoint = Vector2.new(1, 0.5)
-		CloseButton.Position = UDim2.new(1, -19, 0.5, 0)
-		CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		CloseButton.Size = UDim2.new(0, 18, 0, 18)
-		CloseButton.BorderSizePixel = 0
-		CloseButton.BackgroundColor3 = Color3.fromRGB(60, 40, 40)
-		CloseButton.Parent = TopBar
-
-		local UIStroke_Close = Instance.new("UIStroke")
-		UIStroke_Close.Color = Color3.fromRGB(80, 50, 50)
-		UIStroke_Close.Parent = CloseButton
-
-		local UICorner_Close = Instance.new("UICorner")
-		UICorner_Close.CornerRadius = UDim.new(0, 3)
-		UICorner_Close.Parent = CloseButton
-
-		local CloseIcon = Instance.new("TextLabel")
-		CloseIcon.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-		CloseIcon.TextColor3 = Color3.fromRGB(180, 120, 120)
-		CloseIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		CloseIcon.Text = "×"
-		CloseIcon.BackgroundTransparency = 1
-		CloseIcon.Size = UDim2.new(1, 0, 1, 0)
-		CloseIcon.BorderSizePixel = 0
-		CloseIcon.TextSize = 16
-		CloseIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		CloseIcon.Parent = CloseButton
-
 		Navigation = Instance.new("Frame")
 		Navigation.Name = "Navigation"
 		Navigation.Position = UDim2.new(0, 0, 0, 25)
@@ -257,55 +167,11 @@ function Library:Create(name, info, accentcolor)
 		TopBar.InputBegan:Connect(HandleDragStart)
 		TopBar.InputEnded:Connect(HandleDragEnd)
 
-		local MobileDetector = Instance.new("TextButton")
-		MobileDetector.BackgroundTransparency = 1
-		MobileDetector.Size = UDim2.new(1, 0, 1, 0)
-		MobileDetector.Text = ""
-		MobileDetector.Parent = MobileButton
-
-		MobileDetector.InputBegan:Connect(HandleDragStart)
-		MobileDetector.InputEnded:Connect(HandleDragEnd)
-
 		game:GetService("UserInputService").InputChanged:Connect(function(input)
 			if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 				local delta = input.Position - dragStart
 				UI.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 			end
-		end)
-
-		local MinimizeDetector = Instance.new("TextButton")
-		MinimizeDetector.BackgroundTransparency = 1
-		MinimizeDetector.Size = UDim2.new(1, 0, 1, 0)
-		MinimizeDetector.Text = ""
-		MinimizeDetector.Parent = MinimizeButton
-
-		local isMinimized = false
-
-		MinimizeDetector.MouseButton1Click:Connect(function()
-			isMinimized = not isMinimized
-			
-			if isMinimized then
-				Navigation.Visible = false
-				Content.Visible = false
-				BottomBar.Visible = false
-				UI:TweenSize(UDim2.new(0, 350, 0, 24), "Out", "Quad", 0.2, true)
-			else
-				UI:TweenSize(UDim2.new(0, 350, 0, 225), "Out", "Quad", 0.2, true, function()
-					Navigation.Visible = true
-					Content.Visible = true
-					BottomBar.Visible = true
-				end)
-			end
-		end)
-
-		local CloseDetector = Instance.new("TextButton")
-		CloseDetector.BackgroundTransparency = 1
-		CloseDetector.Size = UDim2.new(1, 0, 1, 0)
-		CloseDetector.Text = ""
-		CloseDetector.Parent = CloseButton
-
-		CloseDetector.MouseButton1Click:Connect(function()
-			baconlib:Destroy()
 		end)
 	end
 
