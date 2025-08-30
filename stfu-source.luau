@@ -509,6 +509,33 @@ function Library:Create(name, info, accentcolor)
 			Info_Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			Info_Toggle.Parent = Toggle
 
+			-- Keybind display
+			local KeybindLabel = Instance.new("TextLabel")
+			KeybindLabel.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+			KeybindLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
+			KeybindLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			KeybindLabel.Text = keybind and keybind.Name or "None"
+			KeybindLabel.Name = "KeybindLabel"
+			KeybindLabel.AnchorPoint = Vector2.new(1, 0.5)
+			KeybindLabel.Size = UDim2.new(0, 60, 0, 18)
+			KeybindLabel.BackgroundTransparency = 0
+			KeybindLabel.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+			KeybindLabel.TextXAlignment = Enum.TextXAlignment.Center
+			KeybindLabel.Position = UDim2.new(1, -30, 0.5, 0)
+			KeybindLabel.BorderSizePixel = 0
+			KeybindLabel.TextSize = 11
+			KeybindLabel.Parent = Toggle
+
+			local UIStroke_Keybind = Instance.new("UIStroke")
+			UIStroke_Keybind.Color = Color3.fromRGB(52, 52, 52)
+			UIStroke_Keybind.Parent = KeybindLabel
+
+			local KeybindButton = Instance.new("TextButton")
+			KeybindButton.BackgroundTransparency = 1
+			KeybindButton.Size = UDim2.new(1, 0, 1, 0)
+			KeybindButton.Text = ""
+			KeybindButton.Parent = KeybindLabel
+
 			local CheckBoard = Instance.new("Frame")
 			CheckBoard.AnchorPoint = Vector2.new(1, 0.5)
 			CheckBoard.Name = "CheckBoard"
@@ -560,6 +587,47 @@ function Library:Create(name, info, accentcolor)
 			local currentKeybind = keybind
 			local keybindConnection = nil
 			local activeCoroutine = nil
+			local isWaitingForKeybind = false
+
+			-- Function to update keybind display
+			local function UpdateKeybindDisplay()
+				if isWaitingForKeybind then
+					KeybindLabel.Text = "..."
+					KeybindLabel.TextColor3 = accentcolor
+				else
+					KeybindLabel.Text = currentKeybind and currentKeybind.Name or "None"
+					KeybindLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
+				end
+			end
+
+			-- Keybind button click handler
+			KeybindButton.MouseButton1Click:Connect(function()
+				if isWaitingForKeybind then return end
+				
+				isWaitingForKeybind = true
+				UpdateKeybindDisplay()
+				
+				local connection
+				connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+					if gameProcessed then return end
+					
+					-- Allow Escape to cancel keybind setting
+					if input.KeyCode == Enum.KeyCode.Escape then
+						isWaitingForKeybind = false
+						UpdateKeybindDisplay()
+						connection:Disconnect()
+						return
+					end
+					
+					-- Set new keybind
+					if input.KeyCode ~= Enum.KeyCode.Unknown then
+						ToggleObject.SetKeybind(input.KeyCode)
+						isWaitingForKeybind = false
+						UpdateKeybindDisplay()
+						connection:Disconnect()
+					end
+				end)
+			end)
 
 			-- Create toggle object with methods
 			local ToggleObject = {
@@ -573,6 +641,7 @@ function Library:Create(name, info, accentcolor)
 				end,
 				SetKeybind = function(newKeybind)
 					currentKeybind = newKeybind
+					UpdateKeybindDisplay()
 					-- Disconnect old keybind
 					if keybindConnection then
 						keybindConnection:Disconnect()
@@ -690,6 +759,9 @@ function Library:Create(name, info, accentcolor)
 			if currentKeybind then
 				ToggleObject.SetKeybind(currentKeybind)
 			end
+			
+			-- Initialize keybind display
+			UpdateKeybindDisplay()
 
 			UpdateToggle()
 
@@ -719,5 +791,35 @@ function Library:Create(name, info, accentcolor)
 
 	return setmetatable(Window, Window)
 end
+
+-- Example usage:
+local Window = Library:Create(
+	"Liner Hub - Arsenal",
+	"Made by someone",
+	Color3.fromRGB(255, 70, 73))
+
+local Tab1 = Window:CreateTab("Example Tab")
+
+Tab1:CreateLabel("Example Label")
+
+local Toggle = Tab1:CreateToggle("Example Toggle", "Automatically prints 5 every 5 seconds", false, Enum.KeyCode.F, function(enabled)
+	if enabled then
+		print("Toggle enabled - will print 5 every 5 seconds")
+		print("5")
+	else
+		print("Toggle disabled")
+	end
+end)
+
+Tab1:CreateButton(
+	"Example Button", 
+	"Prints 1 and changes toggle keybind to X.", 
+	function()
+		print("1")
+		Toggle.SetKeybind(Enum.KeyCode.X)
+		print("Toggle keybind changed to X")
+	end)
+
+print("Current toggle keybind:", Toggle.GetKeybind())
 
 return Library
