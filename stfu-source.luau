@@ -3,7 +3,6 @@ Library.__index = Library
 
 local Player = game.Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
-local UserInputService = game:GetService("UserInputService")
 
 function Library:Create(name, info, accentcolor)
 	for _, gui in pairs(PlayerGui:GetChildren()) do
@@ -464,8 +463,8 @@ function Library:Create(name, info, accentcolor)
 
 			return Button
 		end
-		
-		function Tab:CreateToggle(title, info, default, keybind, callback)
+
+		function Tab:CreateToggle(title, info, default, callback)
 			local Toggle = Instance.new("Frame")
 			Toggle.Name = "Toggle"
 			Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -500,7 +499,7 @@ function Library:Create(name, info, accentcolor)
 			Info_Toggle.Text = info
 			Info_Toggle.Name = "Info_Toggle"
 			Info_Toggle.AnchorPoint = Vector2.new(0, 1)
-			Info_Toggle.Size = UDim2.new(1, keybind and -55 or -35, 0, 10)
+			Info_Toggle.Size = UDim2.new(1, -35, 0, 10)
 			Info_Toggle.BackgroundTransparency = 1
 			Info_Toggle.TextXAlignment = Enum.TextXAlignment.Left
 			Info_Toggle.Position = UDim2.new(0, 5, 1, -5)
@@ -512,7 +511,7 @@ function Library:Create(name, info, accentcolor)
 			local CheckBoard = Instance.new("Frame")
 			CheckBoard.AnchorPoint = Vector2.new(1, 0.5)
 			CheckBoard.Name = "CheckBoard"
-			CheckBoard.Position = UDim2.new(1, keybind and -30 or -5, 0.5, 0)
+			CheckBoard.Position = UDim2.new(1, -5, 0.5, 0)
 			CheckBoard.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			CheckBoard.Size = UDim2.new(0, 20, 0, 20)
 			CheckBoard.BorderSizePixel = 0
@@ -549,54 +548,6 @@ function Library:Create(name, info, accentcolor)
 			Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
 			Icon.Parent = Checked
-
-			-- Keybind element (if keybind is provided)
-			local KeybindFrame, KeyCodeLabel
-			local currentKeybind = keybind
-			local waitingForKeybind = false
-
-			if keybind then
-				KeybindFrame = Instance.new("Frame")
-				KeybindFrame.AnchorPoint = Vector2.new(1, 0.5)
-				KeybindFrame.Name = "Keybind"
-				KeybindFrame.Position = UDim2.new(1, -5, 0.5, 0)
-				KeybindFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				KeybindFrame.Size = UDim2.new(0, 20, 0, 20)
-				KeybindFrame.BorderSizePixel = 0
-				KeybindFrame.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-				KeybindFrame.Parent = Toggle
-
-				local UIStroke_Keybind = Instance.new("UIStroke")
-				UIStroke_Keybind.Color = Color3.fromRGB(52, 52, 52)
-				UIStroke_Keybind.Parent = KeybindFrame
-
-				KeyCodeLabel = Instance.new("TextLabel")
-				KeyCodeLabel.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-				KeyCodeLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
-				KeyCodeLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				KeyCodeLabel.Text = string.upper(tostring(keybind):gsub("Enum.KeyCode.", ""))
-				KeyCodeLabel.BackgroundTransparency = 1
-				KeyCodeLabel.Name = "KeyCode"
-				KeyCodeLabel.Size = UDim2.new(1, 0, 1, 0)
-				KeyCodeLabel.BorderSizePixel = 0
-				KeyCodeLabel.TextSize = 14
-				KeyCodeLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				KeyCodeLabel.Parent = KeybindFrame
-
-				local KeybindDetector = Instance.new("TextButton")
-				KeybindDetector.BackgroundTransparency = 1
-				KeybindDetector.Size = UDim2.new(1, 0, 1, 0)
-				KeybindDetector.Text = ""
-				KeybindDetector.Parent = KeybindFrame
-
-				KeybindDetector.MouseButton1Click:Connect(function()
-					if not waitingForKeybind then
-						waitingForKeybind = true
-						KeyCodeLabel.Text = "..."
-						KeyCodeLabel.TextColor3 = accentcolor
-					end
-				end)
-			end
 
 			local ClickDetector = Instance.new("TextButton")
 			ClickDetector.BackgroundTransparency = 1
@@ -636,7 +587,7 @@ function Library:Create(name, info, accentcolor)
 				end
 			end
 
-			local function ToggleFunction()
+			ClickDetector.MouseButton1Click:Connect(function()
 				local ripple = Instance.new("Frame")
 				ripple.Name = "Ripple"
 				ripple.Size = UDim2.new(0, 0, 0, 0)
@@ -673,27 +624,7 @@ function Library:Create(name, info, accentcolor)
 
 				isToggled = not isToggled
 				UpdateToggle()
-			end
-
-			ClickDetector.MouseButton1Click:Connect(ToggleFunction)
-
-			-- Keybind functionality
-			if keybind then
-				UserInputService.InputBegan:Connect(function(input, gameProcessed)
-					if gameProcessed then return end
-					
-					if waitingForKeybind then
-						if input.UserInputType == Enum.UserInputType.Keyboard then
-							currentKeybind = input.KeyCode
-							KeyCodeLabel.Text = string.upper(tostring(input.KeyCode):gsub("Enum.KeyCode.", ""))
-							KeyCodeLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
-							waitingForKeybind = false
-						end
-					elseif input.KeyCode == currentKeybind then
-						ToggleFunction()
-					end
-				end)
-			end
+			end)
 
 			UpdateToggle()
 
@@ -705,15 +636,6 @@ function Library:Create(name, info, accentcolor)
 				end,
 				GetValue = function()
 					return isToggled
-				end,
-				SetKeybind = function(newKeybind)
-					if KeyCodeLabel then
-						currentKeybind = newKeybind
-						KeyCodeLabel.Text = string.upper(tostring(newKeybind):gsub("Enum.KeyCode.", ""))
-					end
-				end,
-				GetKeybind = function()
-					return currentKeybind
 				end
 			}
 
@@ -847,7 +769,7 @@ function Library:Create(name, info, accentcolor)
 		return Button
 	end
 
-	function Window:CreateToggle(tab, title, info, default, keybind, callback)
+	function Window:CreateToggle(tab, title, info, default, callback)
 		local Toggle = Instance.new("Frame")
 		Toggle.Name = "Toggle"
 		Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -882,7 +804,7 @@ function Library:Create(name, info, accentcolor)
 		Info_Toggle.Text = info
 		Info_Toggle.Name = "Info_Toggle"
 		Info_Toggle.AnchorPoint = Vector2.new(0, 1)
-		Info_Toggle.Size = UDim2.new(1, keybind and -55 or -35, 0, 10)
+		Info_Toggle.Size = UDim2.new(1, -35, 0, 10)
 		Info_Toggle.BackgroundTransparency = 1
 		Info_Toggle.TextXAlignment = Enum.TextXAlignment.Left
 		Info_Toggle.Position = UDim2.new(0, 5, 1, -5)
@@ -894,7 +816,7 @@ function Library:Create(name, info, accentcolor)
 		local CheckBoard = Instance.new("Frame")
 		CheckBoard.AnchorPoint = Vector2.new(1, 0.5)
 		CheckBoard.Name = "CheckBoard"
-		CheckBoard.Position = UDim2.new(1, -30, 0.5, 0)
+		CheckBoard.Position = UDim2.new(1, -5, 0.5, 0)
 		CheckBoard.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		CheckBoard.Size = UDim2.new(0, 20, 0, 20)
 		CheckBoard.BorderSizePixel = 0
@@ -931,54 +853,6 @@ function Library:Create(name, info, accentcolor)
 		Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
 		Icon.Parent = Checked
-
-		-- Keybind element (if keybind is provided)
-		local KeybindFrame, KeyCodeLabel
-		local currentKeybind = keybind
-		local waitingForKeybind = false
-
-		if keybind then
-			KeybindFrame = Instance.new("Frame")
-			KeybindFrame.AnchorPoint = Vector2.new(1, 0.5)
-			KeybindFrame.Name = "Keybind"
-			KeybindFrame.Position = UDim2.new(1, -5, 0.5, 0)
-			KeybindFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			KeybindFrame.Size = UDim2.new(0, 20, 0, 20)
-			KeybindFrame.BorderSizePixel = 0
-			KeybindFrame.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
-			KeybindFrame.Parent = Toggle
-
-			local UIStroke_Keybind = Instance.new("UIStroke")
-			UIStroke_Keybind.Color = Color3.fromRGB(52, 52, 52)
-			UIStroke_Keybind.Parent = KeybindFrame
-
-			KeyCodeLabel = Instance.new("TextLabel")
-			KeyCodeLabel.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-			KeyCodeLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
-			KeyCodeLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			KeyCodeLabel.Text = string.upper(tostring(keybind):gsub("Enum.KeyCode.", ""))
-			KeyCodeLabel.BackgroundTransparency = 1
-			KeyCodeLabel.Name = "KeyCode"
-			KeyCodeLabel.Size = UDim2.new(1, 0, 1, 0)
-			KeyCodeLabel.BorderSizePixel = 0
-			KeyCodeLabel.TextSize = 14
-			KeyCodeLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			KeyCodeLabel.Parent = KeybindFrame
-
-			local KeybindDetector = Instance.new("TextButton")
-			KeybindDetector.BackgroundTransparency = 1
-			KeybindDetector.Size = UDim2.new(1, 0, 1, 0)
-			KeybindDetector.Text = ""
-			KeybindDetector.Parent = KeybindFrame
-
-			KeybindDetector.MouseButton1Click:Connect(function()
-				if not waitingForKeybind then
-					waitingForKeybind = true
-					KeyCodeLabel.Text = "..."
-					KeyCodeLabel.TextColor3 = accentcolor
-				end
-			end)
-		end
 
 		local ClickDetector = Instance.new("TextButton")
 		ClickDetector.BackgroundTransparency = 1
@@ -1018,7 +892,7 @@ function Library:Create(name, info, accentcolor)
 			end
 		end
 
-		local function ToggleFunction()
+		ClickDetector.MouseButton1Click:Connect(function()
 			local ripple = Instance.new("Frame")
 			ripple.Name = "Ripple"
 			ripple.Size = UDim2.new(0, 0, 0, 0)
@@ -1055,27 +929,7 @@ function Library:Create(name, info, accentcolor)
 
 			isToggled = not isToggled
 			UpdateToggle()
-		end
-
-		ClickDetector.MouseButton1Click:Connect(ToggleFunction)
-
-		-- Keybind functionality
-		if keybind then
-			UserInputService.InputBegan:Connect(function(input, gameProcessed)
-				if gameProcessed then return end
-				
-				if waitingForKeybind then
-					if input.UserInputType == Enum.UserInputType.Keyboard then
-						currentKeybind = input.KeyCode
-						KeyCodeLabel.Text = string.upper(tostring(input.KeyCode):gsub("Enum.KeyCode.", ""))
-						KeyCodeLabel.TextColor3 = Color3.fromRGB(99, 99, 99)
-						waitingForKeybind = false
-					end
-				elseif input.KeyCode == currentKeybind then
-					ToggleFunction()
-				end
-			end)
-		end
+		end)
 
 		UpdateToggle()
 
@@ -1087,15 +941,6 @@ function Library:Create(name, info, accentcolor)
 			end,
 			GetValue = function()
 				return isToggled
-			end,
-			SetKeybind = function(newKeybind)
-				if KeyCodeLabel then
-					currentKeybind = newKeybind
-					KeyCodeLabel.Text = string.upper(tostring(newKeybind):gsub("Enum.KeyCode.", ""))
-				end
-			end,
-			GetKeybind = function()
-				return currentKeybind
 			end
 		}
 
