@@ -792,34 +792,4 @@ function Library:Create(name, info, accentcolor)
 	return setmetatable(Window, Window)
 end
 
--- Example usage:
-local Window = Library:Create(
-	"Liner Hub - Arsenal",
-	"Made by someone",
-	Color3.fromRGB(255, 70, 73))
-
-local Tab1 = Window:CreateTab("Example Tab")
-
-Tab1:CreateLabel("Example Label")
-
-local Toggle = Tab1:CreateToggle("Example Toggle", "Automatically prints 5 every 5 seconds", false, Enum.KeyCode.F, function(enabled)
-	if enabled then
-		print("Toggle enabled - will print 5 every 5 seconds")
-		print("5")
-	else
-		print("Toggle disabled")
-	end
-end)
-
-Tab1:CreateButton(
-	"Example Button", 
-	"Prints 1 and changes toggle keybind to X.", 
-	function()
-		print("1")
-		Toggle.SetKeybind(Enum.KeyCode.X)
-		print("Toggle keybind changed to X")
-	end)
-
-print("Current toggle keybind:", Toggle.GetKeybind())
-
 return Library
